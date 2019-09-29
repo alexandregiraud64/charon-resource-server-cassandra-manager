@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <title>Charon - Oauth authentication server</title>
+        <meta charset="utf-8" />
+ 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="css/main.css" th:href="@{/css/main.css}" />
+        <link rel="stylesheet" href="css/main.css" th:href="@{/css/panel-welcome.css}" />
+    </head>
+    <body>
+		<div th:fragment="brand-panel" class="brand-container">
+			<a th:href="@{/index}" class="brand-link">
+				<img class="brand-logo" src="logo-charon" th:src="@{/images/logo-charon.png}" alt="logo"><br/>
+				<span class="brand-slogan">An OpenSource Oauth Server</span>
+			</a>
+		</div>
+
+		<div th:fragment="menu-panel" class="menu">
+			<div class="user-element" sec:authorize="isAuthenticated()">
+				<i class="fa fa-user"></i> <span sec:authentication="principal.authorities"></span> <span sec:authentication="name"></span>
+			</div>
+			<div class="menu-element" sec:authorize="!isAuthenticated()">
+				<a th:href="@{/login}">Login</a>
+			</div>
+			<div class="menu-element" sec:authorize="!isAuthenticated()">
+				<a th:href="@{/user/create}">Create an account</a>
+			</div>
+			<div class="menu-element" sec:authorize="isAuthenticated()">
+				<a th:href="@{/client/create}">Create a client</a>
+			</div>
+			<div class="menu-element" sec:authorize="hasRole('ROLE_ADMIN')">
+				<a th:href="@{/user/getAll}">Manage users</a>
+			</div>
+			<div class="menu-element" sec:authorize="isAuthenticated()">
+				<a th:href="@{/client/getAll}">Manage clients</a>
+			</div>
+			<div class="menu-element" sec:authorize="isAuthenticated()">
+				<form th:action="@{/logout}" method="post" style="display:inline">
+					<button type="submit">Logout</button>
+				</form>
+			</div>
+		</div>
+		
+		<div th:if="${success} or ${error}" class="container-alerts">
+			<div th:fragment="alerts-panel">
+				<div class="alert alert-success" th:if="${success}">
+				    <p th:text="#{${success}}"></p>    
+				</div>
+				<div class="alert alert-danger" th:if="${error}">
+				    <p th:text="#{${error}}"></p>    
+				</div>
+			</div>
+		</div>
+
+		<div class="banner">Welcome to the Charon Server!</div>
+    </body>
+</html>
